@@ -37,6 +37,8 @@ namespace gl3 {
 
         void setFloat(const std::string &uniformName, float number) const;
 
+        void setInt(const std::string &uniformName, int number) const;
+
         void use() const;
 
     private:

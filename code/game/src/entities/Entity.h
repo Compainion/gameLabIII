@@ -20,9 +20,9 @@ namespace gl3 {
         glm::vec3 scale;
         glm::vec4 color;
         float zRotation;
+        Shader shader;
 
     private:
-        Shader shader;
         Mesh mesh;
 
         [[nodiscard]] glm::mat4 calculateModelToWorldNormal() const;

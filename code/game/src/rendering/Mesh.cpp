@@ -2,7 +2,7 @@
 #include <iostream>
 #include "glad/glad.h"
 #include "../Assets.h"
-
+#define BUFFER_OFFSET(i) ((char *)NULL + (i))
 namespace gl3 {
     template<typename T>
     GLuint createBuffer(GLuint bufferType, const std::vector<T> &bufferData) {
@@ -55,25 +55,61 @@ namespace gl3 {
                     size = accessor.type;
                 }
 
-                const auto &result = vaa.find(attrib.first);
-                if (result != vaa.end()) {
-                    glEnableVertexAttribArray(result->second);
-                    glVertexAttribPointer(result->second, size, accessor.componentType,
+                int vaa = -1;
+                if (attrib.first.compare("POSITION") == 0) vaa = 0;
+                if (attrib.first.compare("NORMAL") == 0) vaa = 1;
+                if (attrib.first.compare("TEXCOORD_0") == 0) vaa = 2;
+                if (vaa > -1) {
+                    glEnableVertexAttribArray(vaa);
+                    glVertexAttribPointer(vaa, size, accessor.componentType,
                                           accessor.normalized ? GL_TRUE : GL_FALSE,
-                                          byteStride, nullptr);
-                }
+                                          byteStride, BUFFER_OFFSET(accessor.byteOffset));
+                } else
+                    std::cout << "vaa missing: " << attrib.first << std::endl;
+
                 /*
                  The tinygltf mesh primitives have 3 attributes: NORMAL, POSITION and TEXCOORD_0
                  for now we are only interested in first and the second, the third is just for textures we don't cover them at this point ^^
                  for more information see https://learnopengl.com/Getting-started/Textures
-
-
-                else {
-                    std::cerr << "[mesh] unsupported VAA: " << attrib.first << std::endl;
-                }
                 */
-            }
+                if (model.textures.size() > 0) {
+                    // fixme: Use material's baseColor
+                    tinygltf::Texture &tex = model.textures[0];
 
+                    if (tex.source > -1) {
+
+                        GLuint texid;
+                        glGenTextures(1, &texid);
+
+                        tinygltf::Image &image = model.images[tex.source];
+
+                        glBindTexture(GL_TEXTURE_2D, texid);
+                        glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+                        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+                        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+                        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+                        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+                        GLenum format = GL_RGBA;
+
+                        if (image.component == 1) {
+                            format = GL_RED;
+                        } else if (image.component == 2) {
+                            format = GL_RG;
+                        } else if (image.component == 3) {
+                            format = GL_RGB;
+                        }
+                            GLenum type = GL_UNSIGNED_BYTE;
+                            if (image.bits == 16) {
+                                type = GL_UNSIGNED_SHORT;
+                            }
+                            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image.width, image.height, 0,
+                                         format, type, &image.image.at(0));
+
+
+                    }
+                }
+            }
             primitives.push_back({primitive.mode, indexAccessor.count,
                                   indexAccessor.componentType});
         }

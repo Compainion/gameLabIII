@@ -66,6 +66,10 @@ namespace gl3 {
         auto uniformLocation = glGetUniformLocation(shaderProgram, uniformName.c_str());
         glUniform1f(uniformLocation, number);
     }
+    void Shader::setInt(const std::string &uniformName, int number) const {
+        auto uniformLocation = glGetUniformLocation(shaderProgram, uniformName.c_str());
+        glUniform1i(uniformLocation, number);
+    }
 
     void Shader::use() const {
         glUseProgram(shaderProgram);

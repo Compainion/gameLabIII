@@ -37,7 +37,8 @@ namespace gl3 {
         std::map<int, unsigned int> buffers;
         std::map<std::string, unsigned int> vaa = {
                 {"POSITION", 0},
-                {"NORMAL",   1}
+                {"NORMAL",   1},
+                {"TEXCOORD_0", 2}
         };
         std::vector<Primitive> primitives;
     };
