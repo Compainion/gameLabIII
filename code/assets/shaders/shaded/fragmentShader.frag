@@ -19,5 +19,5 @@ void main() {
     float attenuation = max(dot(norm, -lightDir), 0.0f);
     vec3 diff = lightColor * difference * vec3(texture(diffuse, TexCoords));
     vec3 result = vec3(texture(diffuse, TexCoords));
-    fragColor = texture2D(diffuse, TexCoords);
+    fragColor = vec4(result * attenuation, 1.0f);
 }

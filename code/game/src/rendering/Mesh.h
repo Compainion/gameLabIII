@@ -24,6 +24,7 @@ namespace gl3 {
             std::swap(this->buffers, other.buffers);
             std::swap(this->vaa, other.vaa);
             std::swap(this->primitives, other.primitives);
+            std::swap(this->texture, other.texture);
         }
 
         void draw() const;
@@ -34,6 +35,7 @@ namespace gl3 {
         tinygltf::Model loadGltf(const std::filesystem::path &gltfAssetPath);
 
         unsigned int VAO = 0;
+        unsigned int texture = 0;
         std::map<int, unsigned int> buffers;
         std::map<std::string, unsigned int> vaa = {
                 {"POSITION", 0},

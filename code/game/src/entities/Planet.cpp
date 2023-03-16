@@ -45,7 +45,7 @@ namespace gl3 {
 
     Planet::Planet(glm::vec3 position, float size, glm::vec4 color) : Entity(
             Shader("shaders/shaded/vertexShader.vert", "shaders/shaded/fragmentShader.frag"),
-            Mesh("gltf/untitled.glb"),
+            Mesh("gltf/planet2.glb"),
             position,
             0,
             glm::vec3(size, size, size),
@@ -53,6 +53,5 @@ namespace gl3 {
 
     void Planet::draw(Game *game) {
         Entity::draw(game);
-        shader.setInt("diffuse", 0);
     }
 }// gl3

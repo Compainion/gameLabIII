@@ -4,14 +4,6 @@
 #include "../Assets.h"
 #define BUFFER_OFFSET(i) ((char *)NULL + (i))
 namespace gl3 {
-    template<typename T>
-    GLuint createBuffer(GLuint bufferType, const std::vector<T> &bufferData) {
-        unsigned int buffer = 0;
-        glGenBuffers(1, &buffer);
-        glBindBuffer(bufferType, buffer);
-        glBufferData(bufferType, bufferData.size() * sizeof(T), bufferData.data(), GL_STATIC_DRAW);
-        return buffer;
-    }
 
     Mesh::Mesh(const std::filesystem::path &gltfAssetPath, int meshIndex) {
         auto assetPath = resolveAssetPath(gltfAssetPath);
@@ -23,14 +15,16 @@ namespace gl3 {
 
         glGenVertexArrays(1, &VAO);
         glBindVertexArray(VAO);
+        std::cout << "Bound VAO: " << VAO << std::endl;
 
         std::map<int, unsigned int> vbos;
         for (size_t i = 0; i < model.bufferViews.size(); ++i) {
             const auto &bufferView = model.bufferViews[i];
             const auto &buffer = model.buffers[bufferView.buffer];
             if (bufferView.target == 0) {
-                std::cerr << "[mesh] bufferView.target is zero, drawArrays not supported: " << gltfAssetPath.string()
-                          << std::endl;
+                //TODO: Remove maybe?!
+                //std::cerr << "[mesh] bufferView.target is zero, drawArrays not supported: " << gltfAssetPath.string()
+                //          << std::endl;
                 continue;
             }
 
@@ -41,7 +35,7 @@ namespace gl3 {
             glBufferData(bufferView.target, bufferView.byteLength, &buffer.data.at(0) + bufferView.byteOffset,
                          GL_STATIC_DRAW);
         }
-
+        bool textureGenerated = false;
         const auto &mesh = model.meshes[meshIndex];
         for (const auto &primitive: mesh.primitives) {
             const auto &indexAccessor = model.accessors[primitive.indices];
@@ -72,18 +66,20 @@ namespace gl3 {
                  for now we are only interested in first and the second, the third is just for textures we don't cover them at this point ^^
                  for more information see https://learnopengl.com/Getting-started/Textures
                 */
-                if (model.textures.size() > 0) {
+
+                if (model.textures.size() > 0 && !textureGenerated) {
+                    textureGenerated = true;
                     // fixme: Use material's baseColor
                     tinygltf::Texture &tex = model.textures[0];
 
                     if (tex.source > -1) {
 
-                        GLuint texid;
-                        glGenTextures(1, &texid);
 
+                        glGenTextures(1, &texture);
+                        std::cout << "Texture ID that should be used: " << texture << std::endl;
                         tinygltf::Image &image = model.images[tex.source];
 
-                        glBindTexture(GL_TEXTURE_2D, texid);
+                        glBindTexture(GL_TEXTURE_2D, texture);
                         glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
                         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
                         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -152,11 +148,15 @@ namespace gl3 {
 
     void Mesh::draw() const {
         glBindVertexArray(VAO);
+        glBindTexture(GL_TEXTURE_2D, texture);
+        std::cout << "Texture ID that is being used: " << texture << std::endl;
+        std::cout << "VAO that is being used: " << VAO << std::endl;
         for (auto &primitive: primitives) {
             glDrawElements(primitive.mode, primitive.count, primitive.type, nullptr);
         }
         glBindVertexArray(0);
     }
+
 
     Mesh::~Mesh() {
         for (auto &entry: buffers) {
@@ -164,4 +164,5 @@ namespace gl3 {
         }
         glDeleteVertexArrays(1, &VAO);
     }
+
 }
