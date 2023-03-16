@@ -6,7 +6,7 @@ namespace gl3 {
 
     Ship::Ship(glm::vec3 position, float zRotation, glm::vec3 scale) : Entity(
             Shader("shaders/shaded/vertexShader.vert", "shaders/shaded/fragmentShader.frag"),
-            Mesh("gltf/spaceship.glb"),
+            Mesh("gltf/spaceship1.glb"),
             position,
             zRotation,
             scale,

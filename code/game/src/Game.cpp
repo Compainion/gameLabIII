@@ -61,7 +61,7 @@ namespace gl3 {
         std::uniform_real_distribution colorDistR{0.0, 1.0};
         std::uniform_real_distribution colorDistG{0.0, 1.0};
         std::uniform_real_distribution colorDistB{0.0, 1.0};
-        for (auto i = 0; i < 40; ++i) {
+        for (auto i = 0; i < 1; ++i) {
             auto randomPosition = glm::vec3(static_cast<float>(positionDist(randomNumberEngine) * 1.5),
                                             static_cast<float>(positionDist(randomNumberEngine) * 1.5), -1);
             auto scale = static_cast<float>(scaleDist(randomNumberEngine));

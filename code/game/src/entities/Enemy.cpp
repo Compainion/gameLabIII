@@ -9,7 +9,7 @@ namespace gl3 {
     Enemy::Enemy(glm::vec3 position, float zRotation, float size) :
             Entity(Shader("shaders/shaded/vertexShader.vert",
                           "shaders/shaded/fragmentShader.frag"),
-                   Mesh("gltf/enemy2.glb"),
+                   Mesh("gltf/enemy1.glb"),
                    position,
                    zRotation,
                    glm::vec3(size, size, size),
