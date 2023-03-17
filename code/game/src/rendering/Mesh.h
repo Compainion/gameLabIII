@@ -13,6 +13,12 @@ namespace gl3 {
         int type;
     };
 
+    //implement as vector of structs
+    struct loadedTexture{
+        std::string name;
+        unsigned int texID;
+    };
+
     class Mesh {
     public:
         explicit Mesh(const std::filesystem::path &gltfAssetPath, int meshIndex = 0);
@@ -33,6 +39,9 @@ namespace gl3 {
 
     private:
         tinygltf::Model loadGltf(const std::filesystem::path &gltfAssetPath);
+
+        static std::vector<loadedTexture> loadedTextures;
+        static int GetTextureID(const std::string &textureName);
 
         unsigned int VAO = 0;
         unsigned int texture = 0;

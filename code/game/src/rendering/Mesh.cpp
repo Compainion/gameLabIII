@@ -2,8 +2,12 @@
 #include <iostream>
 #include "glad/glad.h"
 #include "../Assets.h"
+
+
 #define BUFFER_OFFSET(i) ((char *)NULL + (i))
 namespace gl3 {
+
+    std::vector<loadedTexture> Mesh::loadedTextures;
 
     Mesh::Mesh(const std::filesystem::path &gltfAssetPath, int meshIndex) {
         auto assetPath = resolveAssetPath(gltfAssetPath);
@@ -74,27 +78,30 @@ namespace gl3 {
 
                     if (tex.source > -1) {
 
-
-                        glGenTextures(1, &texture);
-                        std::cout << "Texture ID that should be used: " << texture << std::endl;
                         tinygltf::Image &image = model.images[tex.source];
+                        auto textureName = model.images[0].name;
+                        //Loops through all textures and sees if it already is loaded. If it is, it returns the correct textureID
+                        texture = GetTextureID(textureName);
+                        //This checks if the Texture has already been loaded. If texture is 0 it hasn't been loaded yet
+                        if (texture == 0) {
+                            glGenTextures(1, &texture);
+                            loadedTextures.push_back({textureName, texture});
+                            glBindTexture(GL_TEXTURE_2D, texture);
+                            glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+                            glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+                            glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+                            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+                            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
-                        glBindTexture(GL_TEXTURE_2D, texture);
-                        glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-                        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-                        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-                        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-                        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+                            GLenum format = GL_RGBA;
 
-                        GLenum format = GL_RGBA;
-
-                        if (image.component == 1) {
-                            format = GL_RED;
-                        } else if (image.component == 2) {
-                            format = GL_RG;
-                        } else if (image.component == 3) {
-                            format = GL_RGB;
-                        }
+                            if (image.component == 1) {
+                                format = GL_RED;
+                            } else if (image.component == 2) {
+                                format = GL_RG;
+                            } else if (image.component == 3) {
+                                format = GL_RGB;
+                            }
                             GLenum type = GL_UNSIGNED_BYTE;
                             if (image.bits == 16) {
                                 type = GL_UNSIGNED_SHORT;
@@ -102,7 +109,7 @@ namespace gl3 {
                             glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image.width, image.height, 0,
                                          format, type, &image.image.at(0));
 
-
+                        }
                     }
                 }
             }
@@ -144,6 +151,16 @@ namespace gl3 {
         }
 
         return std::move(model);
+    }
+    int Mesh::GetTextureID(const std::string &textureName) {
+        {
+            for (auto &textureInfo: loadedTextures) {
+                if (textureInfo.name == textureName) {
+                    return textureInfo.texID;
+                }
+            }
+            return 0;
+        }
     }
 
     void Mesh::draw() const {
