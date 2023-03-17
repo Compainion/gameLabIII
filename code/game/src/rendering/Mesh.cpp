@@ -19,7 +19,6 @@ namespace gl3 {
 
         glGenVertexArrays(1, &VAO);
         glBindVertexArray(VAO);
-        std::cout << "Bound VAO: " << VAO << std::endl;
 
         std::map<int, unsigned int> vbos;
         for (size_t i = 0; i < model.bufferViews.size(); ++i) {
@@ -166,8 +165,6 @@ namespace gl3 {
     void Mesh::draw() const {
         glBindVertexArray(VAO);
         glBindTexture(GL_TEXTURE_2D, texture);
-        std::cout << "Texture ID that is being used: " << texture << std::endl;
-        std::cout << "VAO that is being used: " << VAO << std::endl;
         for (auto &primitive: primitives) {
             glDrawElements(primitive.mode, primitive.count, primitive.type, nullptr);
         }

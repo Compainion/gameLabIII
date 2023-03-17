@@ -5,7 +5,7 @@ namespace gl3 {
 
     Missile::Missile(gl3::Game *game) : Entity(
             Shader("shaders/shaded/vertexShader.vert", "shaders/shaded/fragmentShader.frag"),
-            Mesh("gltf/missiles1.glb"),
+            Mesh("gltf/missiles.glb"),
             {0.0f, 0.0f, 0.0f},
             0.0f,
             {1, 1, 1},
