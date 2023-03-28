@@ -5,6 +5,11 @@
 #include <string>
 #include <filesystem>
 #include "tiny_gltf/tiny_gltf.h"
+#include "glm/fwd.hpp"
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
+
 
 namespace gl3 {
     struct Primitive {
@@ -21,7 +26,9 @@ namespace gl3 {
 
     class Mesh {
     public:
-        explicit Mesh(const std::filesystem::path &gltfAssetPath, int meshIndex = 0);
+        unsigned int instancingAmount;
+
+        explicit Mesh(const std::filesystem::path &gltfAssetPath, int meshIndex = 0, int instancingAmount = 1, glm::mat4 modelMatrices[] = {});
 
         Mesh(const Mesh &other) = delete;
 
@@ -31,6 +38,7 @@ namespace gl3 {
             std::swap(this->vaa, other.vaa);
             std::swap(this->primitives, other.primitives);
             std::swap(this->texture, other.texture);
+            std::swap(this->instancingAmount, other.instancingAmount);
         }
 
         void draw() const;

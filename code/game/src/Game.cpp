@@ -61,18 +61,21 @@ namespace gl3 {
         std::uniform_real_distribution colorDistR{0.0, 1.0};
         std::uniform_real_distribution colorDistG{0.0, 1.0};
         std::uniform_real_distribution colorDistB{0.0, 1.0};
-        for (auto i = 0; i < 40; ++i) {
-            auto randomPosition = glm::vec3(static_cast<float>(positionDist(randomNumberEngine) * 1.5),
-                                            static_cast<float>(positionDist(randomNumberEngine) * 1.5), -1);
+        int amount = 200000;
+        auto *modelMatrices = new glm::mat4[amount];
+        for (auto i = 0; i < amount; ++i) {
+            glm::mat4 model = glm::mat4(1.0f);
+            glm::vec3 randomPosition = glm::vec3(static_cast<float>(positionDist(randomNumberEngine) * 50),
+                                            static_cast<float>(positionDist(randomNumberEngine) * 50),
+                                            static_cast<float>(positionDist(randomNumberEngine) * 50));
+            model = glm::translate(model, randomPosition);
             auto scale = static_cast<float>(scaleDist(randomNumberEngine));
             auto randomScale = glm::vec3(scale, scale, scale);
-            auto r = colorDistR(randomNumberEngine);
-            auto g = colorDistG(randomNumberEngine);
-            auto b = colorDistB(randomNumberEngine);
-            auto randomColor = glm::vec4(r, g , b, 1.0f);
-            auto planet = std::make_unique<Planet>(randomPosition, scale, randomColor);
-            entities.push_back(std::move(planet));
+            model = glm::scale(model, randomScale);
+            modelMatrices[i] = model;
         }
+        auto planet = std::make_unique<Planet>(modelMatrices, amount);
+        entities.push_back(std::move(planet));
 
         auto enemy = std::make_unique<Enemy>(glm::vec3(2, 0, 0), -90, 0.25f);
         entities.push_back(std::move(enemy));

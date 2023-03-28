@@ -9,7 +9,8 @@ namespace gl3 {
 
     std::vector<loadedTexture> Mesh::loadedTextures;
 
-    Mesh::Mesh(const std::filesystem::path &gltfAssetPath, int meshIndex) {
+    Mesh::Mesh(const std::filesystem::path &gltfAssetPath, int meshIndex, int instancingAmount, glm::mat4 modelMatrices[]) {
+        Mesh::instancingAmount = instancingAmount;
         auto assetPath = resolveAssetPath(gltfAssetPath);
         auto model = loadGltf(assetPath);
 
@@ -115,7 +116,28 @@ namespace gl3 {
             primitives.push_back({primitive.mode, indexAccessor.count,
                                   indexAccessor.componentType});
         }
+        if (Mesh::instancingAmount != 1){
+            unsigned int buffer;
+            glGenBuffers(1, &buffer);
+            glBindBuffer(GL_ARRAY_BUFFER, buffer);
+            glBufferData(GL_ARRAY_BUFFER, Mesh::instancingAmount * sizeof(glm::mat4), &modelMatrices[0], GL_STATIC_DRAW);
+            glBindVertexArray(VAO);
+            // vertex attributes
+            std::size_t vec4Size = sizeof(glm::vec4);
+            glEnableVertexAttribArray(3);
+            glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)0);
+            glEnableVertexAttribArray(4);
+            glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(1 * vec4Size));
+            glEnableVertexAttribArray(5);
+            glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(2 * vec4Size));
+            glEnableVertexAttribArray(6);
+            glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)(3 * vec4Size));
 
+            glVertexAttribDivisor(3, 1);
+            glVertexAttribDivisor(4, 1);
+            glVertexAttribDivisor(5, 1);
+            glVertexAttribDivisor(6, 1);
+        }
         glBindVertexArray(0);
         for (auto &entry: vbos) {
             glDeleteBuffers(1, &entry.second);
@@ -166,10 +188,15 @@ namespace gl3 {
         glBindVertexArray(VAO);
         glBindTexture(GL_TEXTURE_2D, texture);
         for (auto &primitive: primitives) {
-            glDrawElements(primitive.mode, primitive.count, primitive.type, nullptr);
+            if (Mesh::instancingAmount == 1) {
+                glDrawElements(primitive.mode, primitive.count, primitive.type, nullptr);
+            }else{
+                glDrawElementsInstanced(primitive.mode, primitive.count, primitive.type, 0, Mesh::instancingAmount);
+            }
         }
         glBindVertexArray(0);
     }
+
 
 
     Mesh::~Mesh() {
