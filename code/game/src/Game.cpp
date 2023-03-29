@@ -61,13 +61,13 @@ namespace gl3 {
         std::uniform_real_distribution colorDistR{0.0, 1.0};
         std::uniform_real_distribution colorDistG{0.0, 1.0};
         std::uniform_real_distribution colorDistB{0.0, 1.0};
-        int amount = 200000;
+        int amount = 400000;
         auto *modelMatrices = new glm::mat4[amount];
         for (auto i = 0; i < amount; ++i) {
             glm::mat4 model = glm::mat4(1.0f);
-            glm::vec3 randomPosition = glm::vec3(static_cast<float>(positionDist(randomNumberEngine) * 50),
-                                            static_cast<float>(positionDist(randomNumberEngine) * 50),
-                                            static_cast<float>(positionDist(randomNumberEngine) * 50));
+            glm::vec3 randomPosition = glm::vec3(static_cast<float>(positionDist(randomNumberEngine) * 25),
+                                            static_cast<float>(positionDist(randomNumberEngine) * 25),
+                                            static_cast<float>(positionDist(randomNumberEngine) * 25));
             model = glm::translate(model, randomPosition);
             auto scale = static_cast<float>(scaleDist(randomNumberEngine));
             auto randomScale = glm::vec3(scale, scale, scale);

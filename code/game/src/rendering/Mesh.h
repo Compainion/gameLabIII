@@ -26,8 +26,6 @@ namespace gl3 {
 
     class Mesh {
     public:
-        unsigned int instancingAmount;
-
         explicit Mesh(const std::filesystem::path &gltfAssetPath, int meshIndex = 0, int instancingAmount = 1, glm::mat4 modelMatrices[] = {});
 
         Mesh(const Mesh &other) = delete;
@@ -53,6 +51,7 @@ namespace gl3 {
 
         unsigned int VAO = 0;
         unsigned int texture = 0;
+        unsigned int instancingAmount = 1;
         std::map<int, unsigned int> buffers;
         std::map<std::string, unsigned int> vaa = {
                 {"POSITION", 0},

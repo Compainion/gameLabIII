@@ -7,10 +7,11 @@
 namespace gl3 {
 
     Planet::Planet(glm::mat4 modelMatrices[], int amount) : Entity(
-            Shader("shaders/instanceShader.vert", "shaders/shaded/fragmentShader.frag"),
+            Shader("shaders/instanceShader.vert", "shaders/fragmentShader.frag"),
             Mesh("gltf/planet1.glb", 0 , amount , modelMatrices)) {}
 
     void Planet::draw(Game *game) {
         Entity::draw(game);
+        shader.setFloat("time",sin(glfwGetTime()));
     }
 }// gl3

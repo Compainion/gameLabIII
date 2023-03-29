@@ -65,12 +65,7 @@ namespace gl3 {
                 } else
                     std::cout << "vaa missing: " << attrib.first << std::endl;
 
-                /*
-                 The tinygltf mesh primitives have 3 attributes: NORMAL, POSITION and TEXCOORD_0
-                 for now we are only interested in first and the second, the third is just for textures we don't cover them at this point ^^
-                 for more information see https://learnopengl.com/Getting-started/Textures
-                */
-
+                // Here the Textures are being loaded and binded, the check is there to see if for the current Mesh a texture is already bound
                 if (model.textures.size() > 0 && !textureGenerated) {
                     textureGenerated = true;
                     // fixme: Use material's baseColor
@@ -116,6 +111,7 @@ namespace gl3 {
             primitives.push_back({primitive.mode, indexAccessor.count,
                                   indexAccessor.componentType});
         }
+        //This sets up the Buffers for the instancing of the Planets
         if (Mesh::instancingAmount != 1){
             unsigned int buffer;
             glGenBuffers(1, &buffer);
@@ -124,6 +120,7 @@ namespace gl3 {
             glBindVertexArray(VAO);
             // vertex attributes
             std::size_t vec4Size = sizeof(glm::vec4);
+            //Even though in the Shader the location of the
             glEnableVertexAttribArray(3);
             glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)0);
             glEnableVertexAttribArray(4);
