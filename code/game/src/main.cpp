@@ -6,7 +6,7 @@
 
 int main() {
     try {
-        gl3::Game spaceBattle("Hallo Mama");
+        gl3::Game spaceBattle("HiveMind");
         spaceBattle.run();
     }
     catch(const std::exception &e) {

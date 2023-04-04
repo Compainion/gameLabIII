@@ -111,7 +111,7 @@ namespace gl3 {
             primitives.push_back({primitive.mode, indexAccessor.count,
                                   indexAccessor.componentType});
         }
-        //This sets up the Buffers for the instancing of the Planets
+        //This sets up the Buffers for instanced rendering
         if (Mesh::instancingAmount != 1){
             unsigned int buffer;
             glGenBuffers(1, &buffer);
@@ -120,7 +120,7 @@ namespace gl3 {
             glBindVertexArray(VAO);
             // vertex attributes
             std::size_t vec4Size = sizeof(glm::vec4);
-            //Even though in the Shader the location of the
+            //This is the only way to pass a mat4 as an Attribute to the shader
             glEnableVertexAttribArray(3);
             glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, 4 * vec4Size, (void*)0);
             glEnableVertexAttribArray(4);
@@ -170,7 +170,7 @@ namespace gl3 {
 
         return std::move(model);
     }
-    int Mesh::GetTextureID(const std::string &textureName) {
+    unsigned int Mesh::GetTextureID(const std::string &textureName) {
         {
             for (auto &textureInfo: loadedTextures) {
                 if (textureInfo.name == textureName) {
@@ -202,5 +202,4 @@ namespace gl3 {
         }
         glDeleteVertexArrays(1, &VAO);
     }
-
 }

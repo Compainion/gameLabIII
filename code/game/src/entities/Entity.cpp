@@ -7,8 +7,8 @@ namespace gl3 {
             mesh(std::move(mesh)),
             position(position),
             zRotation(zRotation),
-            scale(scale),
-            color(color) {}
+            scale(scale)
+            {}
 
 
     glm::mat4 Entity::calculateModelToWorldNormal() const {
@@ -19,6 +19,14 @@ namespace gl3 {
         return glm::transpose(glm::inverse(model));
     }
 
+    glm::mat4 Entity::calculateModel() const{
+        glm::mat4 model = glm::mat4(1.0f);
+        model = glm::translate(model, position);
+        model = glm::scale(model, scale);
+        model = glm::rotate(model, glm::radians(zRotation), glm::vec3(0.0f, 0.0f, 1.0f));
+        return model;
+    }
+
 
 
     void Entity::draw(Game *game) {
@@ -26,7 +34,9 @@ namespace gl3 {
         shader.use();
         shader.setMatrix("mvp", mvpMatrix);
         shader.setMatrix("modelToWorldNormal", calculateModelToWorldNormal());
-        shader.setVector("color", color);
+        shader.setMatrix("model", calculateModel());
+        shader.setVector3("lightPos", game->lightPosition);
+        shader.setVector3("viewPos", game->cameraPosition);
         mesh.draw();
     }
 }

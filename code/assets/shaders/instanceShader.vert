@@ -8,6 +8,7 @@ layout (location = 3) in mat4 instanceMatrix;
 out vec3 normal;
 out vec2 TexCoords;
 out vec3 position;
+out vec3 FragPos;
 
 uniform mat4 mvp;
 uniform mat4 modelToWorldNormal;
@@ -17,6 +18,9 @@ vec3 currentPos;
 void main() {
     currentPos = vec3(instanceMatrix * vec4(aPosition, 1.0f));
     gl_Position = mvp * vec4(currentPos, 1.0f);
+
+    //output variables sent to the fragment shader
+    FragPos = currentPos;
     normal = vec3(modelToWorldNormal * vec4(aNormal, 0.0f));
     position = aPosition;
     TexCoords = aTexCoords;

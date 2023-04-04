@@ -1,6 +1,3 @@
-//
-// Created by Megaport on 06/02/2023.
-//
 
 #pragma once
 
@@ -18,7 +15,6 @@ namespace gl3 {
     protected:
         glm::vec3 position;
         glm::vec3 scale;
-        glm::vec4 color;
         float zRotation;
         Shader shader;
 
@@ -26,6 +22,7 @@ namespace gl3 {
         Mesh mesh;
 
         [[nodiscard]] glm::mat4 calculateModelToWorldNormal() const;
+        glm::mat4 calculateModel() const;
 
 
     public:

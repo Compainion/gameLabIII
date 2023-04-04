@@ -47,7 +47,7 @@ namespace gl3 {
         tinygltf::Model loadGltf(const std::filesystem::path &gltfAssetPath);
 
         static std::vector<loadedTexture> loadedTextures;
-        static int GetTextureID(const std::string &textureName);
+        static unsigned int GetTextureID(const std::string &textureName);
 
         unsigned int VAO = 0;
         unsigned int texture = 0;

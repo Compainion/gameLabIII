@@ -10,6 +10,7 @@
 #include "entities/Ship.h"
 #include <memory>
 #include "entities/Planet.h"
+#include "Camera.h"
 
 
 namespace gl3 {
@@ -17,6 +18,8 @@ namespace gl3 {
     public:
         const static unsigned int width = 1280;
         const static unsigned int height = 720;
+        glm::vec3 lightPosition = {0.0f,0.0f,0.0f};
+        glm::vec3 cameraPosition = {0.0f,2.0f,0.0f};
         Game(const std::string &title);
         void run();
         glm::mat4 calculateMvpMatrix(glm::vec3 position, float zRotationInDegrees, glm::vec3 scale);

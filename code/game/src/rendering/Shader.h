@@ -33,7 +33,9 @@ namespace gl3 {
 
         void setMatrix(const std::string &uniformName, glm::mat4 matrix) const;
 
-        void setVector(const std::string &uniformName, glm::vec4 vector) const;
+        void setVector4(const std::string &uniformName, glm::vec4 vector) const;
+
+        void setVector3(const std::string &uniformName, glm::vec3 vector) const;
 
         void setFloat(const std::string &uniformName, float number) const;
 
