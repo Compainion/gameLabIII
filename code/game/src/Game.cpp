@@ -82,7 +82,7 @@ namespace gl3 {
         entities.push_back(std::move(enemy));
 
 
-        auto light = std::make_unique<Light>(glm::vec3(0.0f, 0.0f, 0.0f));
+        auto light = std::make_unique<Light>();
         entities.push_back(std::move(light));
 
         auto spaceShip = std::make_unique<Ship>(glm::vec3(-2, 1, 0));
@@ -107,7 +107,6 @@ namespace gl3 {
         for (auto &entity: entities) {
             entity->update(this, deltaTime);
         }
-        lightPosition.y += sin(glfwGetTime()) * deltaTime;
         cameraPosition = camera.Position;
         processCameraInput();
     }

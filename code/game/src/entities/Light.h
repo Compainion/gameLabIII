@@ -9,7 +9,7 @@ namespace gl3 {
 
     class Light : public Entity{
     public:
-        explicit Light(glm::vec3 position);
+        explicit Light();
         void update(Game *game, float deltaTime) override;
     };
 

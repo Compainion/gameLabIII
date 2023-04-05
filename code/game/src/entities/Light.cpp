@@ -6,12 +6,15 @@
 #include "../Game.h"
 
 namespace gl3{
-    Light::Light(glm::vec3 position) : Entity(Shader("shaders/shaded/vertexShader.vert", "shaders/lightSource/lightSourceShader.frag"),
+    Light::Light() : Entity(Shader("shaders/shaded/vertexShader.vert", "shaders/lightSource/lightSourceShader.frag"),
                             Mesh("gltf/planet1.glb"))
     {}
 
     void Light::update(Game *game, float deltaTime) {
         Entity::update(game, deltaTime);
-        position = game->lightPosition;
+        float posX = sin(glfwGetTime() + 30) * 50;
+        float posy = sin(glfwGetTime()) * 50;
+        position = glm::vec3{posX, posy, 1.0f};
+        game->lightPosition = position;
     }
 }
