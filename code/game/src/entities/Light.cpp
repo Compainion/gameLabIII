@@ -12,8 +12,8 @@ namespace gl3{
 
     void Light::update(Game *game, float deltaTime) {
         Entity::update(game, deltaTime);
-        float posX = sin(glfwGetTime() + 30) * 50;
-        float posy = sin(glfwGetTime()) * 50;
+        float posX = sin(glfwGetTime() + 30) * 10;
+        float posy = sin(glfwGetTime()) * 10;
         position = glm::vec3{posX, posy, 1.0f};
         game->lightPosition = position;
     }

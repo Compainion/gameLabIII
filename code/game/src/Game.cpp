@@ -119,7 +119,6 @@ namespace gl3 {
             entity->draw(this);
         }
         glDrawArrays(GL_TRIANGLES, 0, 6);
-
         glfwSwapBuffers(window);
     }
 
