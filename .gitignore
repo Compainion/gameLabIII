@@ -32,6 +32,6 @@
 *.app
 
 
-code/cmake-build-debug/
-code/cmake-build-release/
+code/cmake-build-debug-mingw/
+code/cmake-build-debug-msvc/
 
