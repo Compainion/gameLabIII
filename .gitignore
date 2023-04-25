@@ -36,4 +36,5 @@ code/cmake-build-debug-mingw/
 code/cmake-build-debug-msvc/
 code/out/
 code/.vs/
+code/cmake-build-debug/
 
