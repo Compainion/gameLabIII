@@ -1,0 +1,3 @@
+[submodule "code/extern/reactphysics3d"]
+	path = code/extern/reactphysics3d
+	url = https://github.com/DanielChappuis/reactphysics3d.git
