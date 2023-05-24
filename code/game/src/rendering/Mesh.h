@@ -18,7 +18,6 @@ namespace gl3 {
         int type;
     };
 
-    //implement as vector of structs
     struct loadedTexture{
         std::string name;
         unsigned int texID;

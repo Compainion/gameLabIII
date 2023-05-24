@@ -12,6 +12,11 @@ namespace gl3 {
     setRandomStartingVelocity();
     }
 
+    float Boid::alignmentWeight = 2.0f;
+    float Boid::cohesionWeight = 5.0f;
+    float Boid::separationWeight = 0.2f;
+    float Boid::perception = 5.5f;
+
     void Boid::setRandomStartingVelocity(){
         std::mt19937 randomNumberEngine{static_cast<unsigned int>(glfwGetTime() * 100)};
         std::uniform_real_distribution distribution(-0.05, 0.05);
@@ -43,7 +48,7 @@ namespace gl3 {
         if(size > 0) {
             steering = steering / static_cast<float>(size);
             steering -= velocity;
-            steering = glm::normalize(steering);
+            //steering = glm::normalize(steering);
         }
         return steering;
     }
@@ -62,7 +67,7 @@ namespace gl3 {
         if (size > 0) {
             steering = steering / static_cast<float>(size);
             steering -= position;
-            steering = glm::normalize(steering);
+            //steering = glm::normalize(steering);
         }
         return steering;
     }
@@ -85,7 +90,7 @@ namespace gl3 {
         if (size > 0 ) {
             steering = steering / static_cast<float>(size);
             steering -= velocity;
-            steering = glm::normalize(steering);
+            //steering = glm::normalize(steering);
         }
         return steering;
     }
@@ -99,7 +104,7 @@ namespace gl3 {
         glm::vec3 separation = separate(boids);
         glm::vec3 targetPosition = glm::vec3 {100.0f, 0, 0};
         //glm::vec3 target = calculateTargetVector(targetPosition);
-        acceleration += alignment * alignmentMagnitude;
+        acceleration += alignment * alignmentWeight;
         acceleration += cohesion * cohesionWeight;
         acceleration += separation * separationWeight;
         //acceleration += target * targetWeight;
