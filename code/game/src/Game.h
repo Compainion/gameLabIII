@@ -27,7 +27,6 @@ namespace gl3 {
         glm::vec3 lightPosition = {0.0f,0.0f,0.0f};
         glm::vec3 cameraPosition = {0.0f,2.0f,0.0f};
         glm::mat4 calculateMvpMatrix(glm::vec3 position, float zRotationInDegrees, glm::vec3 scale);
-        glm::vec3 getCameraPosition();
         Ship *getShip() { return ship; }
         GLFWwindow *getWindow(){return window;}
         r3d::PhysicsCommon &getPhysicsCommon(){return physicsCommon;}
@@ -40,7 +39,7 @@ namespace gl3 {
         virtual ~Game();
 
     private:
-        void Game::gui();
+        void gui();
         void update();
         void draw();
         void physics();

@@ -11,6 +11,7 @@ namespace gl3 {
         glViewport(0, 0, width, height);
     }
     void mouse_callback(GLFWwindow* window, double xposIn, double yposIn);
+    void mouseSwitchCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
 
     Camera camera((glm::vec3(0.0f,2.0f,0.0f)));
     float lastX = Game::width / 2.0f;
@@ -47,7 +48,8 @@ namespace gl3 {
         glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
         glfwSetCursorPosCallback(window, mouse_callback);
         gladLoadGLLoader((GLADloadproc) glfwGetProcAddress);
-        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+        glfwSetKeyCallback(window, mouseSwitchCallback);
         glEnable(GL_DEPTH_TEST);
         if (glGetError() != GL_NO_ERROR) {
             throw std::runtime_error("gl error");
@@ -56,10 +58,10 @@ namespace gl3 {
         ImGui::CreateContext();
         // Setup Dear ImGui style
         ImGui::StyleColorsDark();
-        //ImGui::StyleColorsLight();
         ImGui_ImplGlfw_InitForOpenGL(window, true);
         ImGui_ImplOpenGL3_Init("#version 460");
     }
+
 
     void Game::run() {
         unsigned int VAO;
@@ -137,9 +139,6 @@ namespace gl3 {
     }
 
     void Game::update() {
-        if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
-            glfwSetWindowShouldClose(window, true);
-        }
         for (auto &entity: entities) {
             entity->update(this, deltaTime);
         }
@@ -207,7 +206,7 @@ namespace gl3 {
 
         lastX = xpos;
         lastY = ypos;
-
+        if (!camera.cameraMouseMovement) return;
         camera.ProcessMouseMovement(xoffset, yoffset, true);
     }
 
@@ -218,9 +217,16 @@ namespace gl3 {
         ImGui::DestroyContext();
     }
 
-    glm::vec3 Game::getCameraPosition() {
-        return cameraPosition;
+
+    void mouseSwitchCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+        if (key == GLFW_KEY_TAB && action == GLFW_PRESS) {
+            if (glfwGetInputMode(window, GLFW_CURSOR) == GLFW_CURSOR_DISABLED) {
+                camera.cameraMouseMovement = false;
+                glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+            } else {
+                camera.cameraMouseMovement = true;
+                glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+            }
+        }
     }
-
-
 }
