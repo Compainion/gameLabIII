@@ -112,7 +112,7 @@ namespace gl3 {
                                   indexAccessor.componentType});
         }
         //This sets up the Buffers for instanced rendering
-        if (Mesh::instancingAmount != 1){
+        if (Mesh::instancingAmount >= 1){
             unsigned int buffer;
             glGenBuffers(1, &buffer);
             glBindBuffer(GL_ARRAY_BUFFER, buffer);

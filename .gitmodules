@@ -1,3 +1,6 @@
 [submodule "code/extern/reactphysics3d"]
 	path = code/extern/reactphysics3d
 	url = https://github.com/DanielChappuis/reactphysics3d.git
+[submodule "code/extern/imgui"]
+	path = code/extern/imgui
+	url = https://github.com/ocornut/imgui.git

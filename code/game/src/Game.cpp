@@ -3,6 +3,8 @@
 #include "entities/Enemy.h"
 #include "Camera.h"
 #include "entities/Light.h"
+#include "entities/Terrain.h"
+#include "entities/Swarm.h"
 
 namespace gl3 {
     void framebuffer_size_callback(GLFWwindow *window, int width, int height) {
@@ -50,6 +52,13 @@ namespace gl3 {
         if (glGetError() != GL_NO_ERROR) {
             throw std::runtime_error("gl error");
         }
+        IMGUI_CHECKVERSION();
+        ImGui::CreateContext();
+        // Setup Dear ImGui style
+        ImGui::StyleColorsDark();
+        //ImGui::StyleColorsLight();
+        ImGui_ImplGlfw_InitForOpenGL(window, true);
+        ImGui_ImplOpenGL3_Init("#version 460");
     }
 
     void Game::run() {
@@ -66,9 +75,9 @@ namespace gl3 {
         auto *modelMatrices = new glm::mat4[amount];
         for (auto i = 0; i < amount; ++i) {
             glm::mat4 model = glm::mat4(1.0f);
-            glm::vec3 randomPosition = glm::vec3(static_cast<float>(positionDist(randomNumberEngine) * 25),
-                                            static_cast<float>(positionDist(randomNumberEngine) * 25),
-                                            static_cast<float>(positionDist(randomNumberEngine) * 25));
+            glm::vec3 randomPosition = glm::vec3(static_cast<float>(positionDist(randomNumberEngine) * 35),
+                                            static_cast<float>((positionDist(randomNumberEngine) + 2.5) * 25),
+                                            static_cast<float>(positionDist(randomNumberEngine) * 35));
             model = glm::translate(model, randomPosition);
             auto scale = static_cast<float>(scaleDist(randomNumberEngine));
             auto randomScale = glm::vec3(scale, scale, scale);
@@ -89,15 +98,42 @@ namespace gl3 {
         ship = spaceShip.get();
         entities.push_back(std::move(spaceShip));
 
+        //auto terrain = std::make_unique<Terrain>(20.0f);
+        //entities.push_back(std::move(terrain));
 
+
+
+        for (int i = 0; i < 50; ++i) {
+            glm::vec3 randomPosition = {static_cast<float>(positionDist(randomNumberEngine)), static_cast<float>(positionDist(randomNumberEngine)),static_cast<float>(positionDist(randomNumberEngine))};
+            auto boid = std::make_unique<Boid>(randomPosition);
+            swarm1.push_back(boid.get());
+            entities.push_back(std::move(boid));
+        }
+
+        //initialize Physics world
+        physicsWorld = physicsCommon.createPhysicsWorld();
+
+        bool show_demo_window = true;
         glfwSetTime(1.0 / 60);
         while (!glfwWindowShouldClose(window)) {
+            gui();
             update();
             draw();
+            physics();
             updateDeltaTime();
             glfwPollEvents();
         }
         glDeleteVertexArrays(1, &VAO);
+    }
+
+    void Game::gui(){
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplGlfw_NewFrame();
+        ImGui::NewFrame();
+        ImGui::Begin("Another Window");   // Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
+        ImGui::Text("Hello from another window!");
+        ImGui::End();
+        ImGui::Render();
     }
 
     void Game::update() {
@@ -106,6 +142,9 @@ namespace gl3 {
         }
         for (auto &entity: entities) {
             entity->update(this, deltaTime);
+        }
+        for (auto &boid: swarm1) {
+            boid->flock(swarm1);
         }
         cameraPosition = camera.Position;
         processCameraInput();
@@ -119,7 +158,13 @@ namespace gl3 {
             entity->draw(this);
         }
         glDrawArrays(GL_TRIANGLES, 0, 6);
+        //This is here so the GUI gets drawn in front of the entities
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
         glfwSwapBuffers(window);
+    }
+
+    void Game::physics() {
+        physicsWorld->update(timeStep);
     }
 
     void Game::updateDeltaTime() {
@@ -166,10 +211,15 @@ namespace gl3 {
         camera.ProcessMouseMovement(xoffset, yoffset, true);
     }
 
-
-
     Game::~Game() {
         glfwTerminate();
+        ImGui_ImplOpenGL3_Shutdown();
+        ImGui_ImplGlfw_Shutdown();
+        ImGui::DestroyContext();
+    }
+
+    glm::vec3 Game::getCameraPosition() {
+        return cameraPosition;
     }
 
 
